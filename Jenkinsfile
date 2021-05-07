@@ -29,7 +29,9 @@ node {
                 if (isUnix()) {
                     echo "isUnix ..................."
 		    //rmsg = sh returnStdout: true, script: "sfdx force:package1:version:list -u PkgOrg"
-	            rmsg = sh returnStdout: true, script: "sfdx force:package:install  -p ${ACT_PACKAGEID} -u dglassman@readiness.salesforce.com.jenkinsdev  -w 15"
+		   rmsg = sh returnStdout: true, script: "sfdx  force:source:deploy -x manifest/package.xml -u dglassman@readiness.salesforce.com.jenkinsdev "
+
+	           // rmsg = sh returnStdout: true, script: "sfdx force:package:install  -p ${ACT_PACKAGEID} -u dglassman@readiness.salesforce.com.jenkinsdev  -w 15"
                   
                 } else {
                     println 'Not Unix .......................'
@@ -104,7 +106,7 @@ def notifyBuild(String buildStatus = 'STARTED',String version,String id) {
 	def summary = "${subject} (${env.BUILD_URL}) Appiphony Package ${version} ID: ${id}  Target Release ACT 19.0 "
   def details = """<p>STARTED: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]':</p>
     <p>Check console output at &QUOT;<a href='${env.BUILD_URL}'>${env.JOB_NAME} [${env.BUILD_NUMBER}]</a>&QUOT;</p>"""
-//Appiphony Package 1.216.0 ID : 04t5G000003rU0TQAU
+
   // Override default values based on build status
   if (buildStatus == 'STARTED') {
     color = 'YELLOW'
