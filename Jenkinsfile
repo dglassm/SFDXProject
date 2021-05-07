@@ -29,7 +29,7 @@ node {
                 if (isUnix()) {
                     echo "isUnix ..................."
 		    //rmsg = sh returnStdout: true, script: "sfdx force:package1:version:list -u PkgOrg"
-		   rmsg = sh returnStdout: true, script: "sfdx  force:source:deploy -x manifest/package.xml -u dglassman@readiness.salesforce.com.jenkinsdev "
+		  // rmsg = sh returnStdout: true, script: "sfdx  force:source:deploy -x manifest/package.xml -u dglassman@readiness.salesforce.com.jenkinsdev "
 
 	           // rmsg = sh returnStdout: true, script: "sfdx force:package:install  -p ${ACT_PACKAGEID} -u dglassman@readiness.salesforce.com.jenkinsdev  -w 15"
                   
@@ -46,7 +46,7 @@ node {
 		
                  if (isUnix()) {
                     echo "isUnix ..................."
-	          	            rmsg = sh returnStdout: true, script: "sfdx  force:source:deploy -x manifest/package.xml -u dglassman@readiness.salesforce.com.qa "
+	          	         //   rmsg = sh returnStdout: true, script: "sfdx  force:source:deploy -x manifest/package.xml -u dglassman@readiness.salesforce.com.qa "
                 } else {
                     println 'Not Unix .......................'
                     rmsg = bat returnStdout: true, script: "sfdx force:mdapi:deploy -d manifest/. -u ${HUB_ORG}"
@@ -61,7 +61,7 @@ node {
  
                 if (isUnix()) {
                     echo "isUnix ..................."
-                    rmsg = sh returnStdout: true, script: "sfdx force:source:deploy -x manifest/package.xml -u dglassman@readiness.salesforce.com.uat "
+                   // rmsg = sh returnStdout: true, script: "sfdx force:source:deploy -x manifest/package.xml -u dglassman@readiness.salesforce.com.uat "
                 } else {
                     println 'Not Unix .......................'
                     rmsg = bat returnStdout: true, script: "sfdx force:mdapi:deploy -d manifest/. -u ${HUB_ORG}"
