@@ -29,9 +29,8 @@ node {
                 if (isUnix()) {
                     echo "isUnix ..................."
 		    //rmsg = sh returnStdout: true, script: "sfdx force:package1:version:list -u PkgOrg"
-		  // rmsg = sh returnStdout: true, script: "sfdx  force:source:deploy -x manifest/package.xml -u dglassman@readiness.salesforce.com.jenkinsdev "
+		  // rmsg = sh returnStdout: true, script: "sfdx  force:source:deploy -x manifest/package.xml -u  "
 
-	           // rmsg = sh returnStdout: true, script: "sfdx force:package:install  -p ${ACT_PACKAGEID} -u dglassman@readiness.salesforce.com.jenkinsdev  -w 15"
                   
                 } else {
                     println 'Not Unix .......................'
@@ -40,49 +39,10 @@ node {
             } //end stage
 	
         }//end if dev
-	if (env.BRANCH_NAME == 'ActCI-Qa') {
-            stage('Build qa Sandbox Step  ') {
-                println "Build qa Sandbox Step"
-		
-                 if (isUnix()) {
-                    echo "isUnix ..................."
-	          	         //   rmsg = sh returnStdout: true, script: "sfdx  force:source:deploy -x manifest/package.xml -u dglassman@readiness.salesforce.com.qa "
-                } else {
-                    println 'Not Unix .......................'
-                    rmsg = bat returnStdout: true, script: "sfdx force:mdapi:deploy -d manifest/. -u ${HUB_ORG}"
-                }
-            } //end stage
-	  
 	
-        }//end if qa
-	 if (env.BRANCH_NAME == 'ActCI-Uat') {
-            stage('Build uat Sandbox via sfdx') {
-                
- 
-                if (isUnix()) {
-                    echo "isUnix ..................."
-                   // rmsg = sh returnStdout: true, script: "sfdx force:source:deploy -x manifest/package.xml -u dglassman@readiness.salesforce.com.uat "
-                } else {
-                    println 'Not Unix .......................'
-                    rmsg = bat returnStdout: true, script: "sfdx force:mdapi:deploy -d manifest/. -u ${HUB_ORG}"
-                }
-            } //end stage
+	 
 	
-        }//end if uat   
-	  if (env.BRANCH_NAME == 'ActCI-Prod') {
-            stage('Build uat Sandbox via sfdx') {
-                
-               
-                if (isUnix()) {
-                    echo "isUnix ..................."
-                    //rmsg = sh returnStdout: true, script: "sfdx force:source:deploy -x manifest/package.xml -u dglassman@readiness.salesforce.com.jenkinprod"
-                } else {
-                    println 'Not Unix .......................'
-                    rmsg = bat returnStdout: true, script: "sfdx force:mdapi:deploy -d manifest/. -u ${HUB_ORG}"
-                }
-            } //end stage
-	
-        }//end if prod   
+       
 	    } catch (e) {
             // If there was an exception thrown, the build failed
              currentBuild.result = "FAILED"
