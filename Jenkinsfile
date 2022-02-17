@@ -112,7 +112,7 @@ node {
 			   
                    switch (SFDCTREE) {
                     case true:
-		       notifyBuild(currentBuild.result,ACT_VERSION,ACT_PACKAGEID,GUSWORKITEMS)
+		       notifyBuild("TEST",ACT_VERSION,ACT_PACKAGEID,GUSWORKITEMS)
                        break
                     case false:
 		       println("Branch  ${env.BRANCH_NAME} Not Found in Build Flow ")
