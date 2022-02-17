@@ -153,6 +153,6 @@ def notifyBuild(String buildStatus = 'STARTED',String version,String id,String g
   }
 
  echo "${summary}"
-// slackSend (color: colorCode, message: summary)
+slackSend (color: colorCode, message: summary)
     
 }
