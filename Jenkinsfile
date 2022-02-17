@@ -2,16 +2,11 @@
 
 import groovy.json.JsonSlurperClassic
 node {
-
-	
     def SFDCTREE = false
-
-	
-    def ACT_VERSION='1.296.0'
-    def ACT_PACKAGEID='04t5G000003vf1z'
-    def GUSWORKITEMS='W-000947'
-    def GUSBUILD='Build AstrosCourseTrackerR.3.6.0'
-
+    def ACT_VERSION='1.314'
+    def ACT_PACKAGEID='04t5G000003vfR5'					   
+    def GUSWORKITEMS=' W-001414'
+    def GUSBUILD='Build AstrosCourseTrackerR.3.10.0'
     stage('checkout source') {
         // when running in multi-branch job, one must issue this command
         checkout scm
@@ -22,87 +17,118 @@ node {
 	    
         if (env.BRANCH_NAME == 'master') {
             stage('Build Master') {
-                echo 'Building sfdx master'
+                echo 'Building sfdx master...'
             }
         }
-
         try {   
-	notifyBuild('STARTED')
 		
         if (env.BRANCH_NAME == 'ActCI-Dev') {
+	    SFDCTREE = true	
+	    notifyBuild('STARTED',ACT_VERSION,ACT_PACKAGEID,GUSWORKITEMS)
+
             stage('Build Dev Sandbox via sfdx') {
                 
                
                 if (isUnix()) {
                     echo "isUnix ..................."
-		    //rmsg = sh returnStdout: true, script: "sfdx force:package1:version:list -u PkgOrg"
-		  // rmsg = sh returnStdout: true, script: "sfdx  force:source:deploy -x manifest/package.xml -u dglassman@readiness.salesforce.com.jenkinsdev "
-
-	           // rmsg = sh returnStdout: true, script: "sfdx force:package:install  -p ${ACT_PACKAGEID} -u dglassman@readiness.salesforce.com.jenkinsdev  -w 15"
+		  // rmsg = sh returnStdout: true, script: "sfdx force:package:install  -p ${ACT_PACKAGEID} -s AdminsOnly -u   -w 15"
+		   rmsg = sh returnStdout: true, script: "sfdx  force:source:deploy -x manifest/package.xml -u "
+	
                   
                 } else {
                     println 'Not Unix .......................'
-                    rmsg = bat returnStdout: true, script: "sfdx force:mdapi:deploy -d manifest/. -u ${HUB_ORG}"
+		    //msg = bat  returnStdout: true, script: "sfdx force:package:install  -p ${ACT_PACKAGEID} -s   -w 15"
+                   // rmsg = bat returnStdout: true, script: "sfdx  force:source:deploy -x manifest/package.xml -u "
                 }
             } //end stage
 	
         }//end if dev
 	if (env.BRANCH_NAME == 'ActCI-Qa') {
+	    SFDCTREE = true
+            notifyBuild('STARTED',ACT_VERSION,ACT_PACKAGEID,GUSWORKITEMS)
+
             stage('Build qa Sandbox Step  ') {
-                println "Build qa Sandbox Step"
+                println "Build Qa Sandbox Step"
 		
                  if (isUnix()) {
                     echo "isUnix ..................."
-	          	         //   rmsg = sh returnStdout: true, script: "sfdx  force:source:deploy -x manifest/package.xml -u dglassman@readiness.salesforce.com.qa "
+	           // rmsg = sh returnStdout: true, script: "sfdx force:package:install  -p ${ACT_PACKAGEID} -s AdminsOnly -u  -w 15"
+	            rmsg = sh returnStdout: true, script: "sfdx  force:source:deploy -x manifest/package.xml -u "
                 } else {
                     println 'Not Unix .......................'
-                    rmsg = bat returnStdout: true, script: "sfdx force:mdapi:deploy -d manifest/. -u ${HUB_ORG}"
+                    rmsg = bat returnStdout: true, script: "sfdx force:package:install  -p ${ACT_PACKAGEID} -s AdminsOnly -u  -w 15"
+                    rmsg = bat returnStdout: true, script: "sfdx  force:source:deploy -x manifest/package.xml -u "
                 }
             } //end stage
 	  
 	
         }//end if qa
 	 if (env.BRANCH_NAME == 'ActCI-Uat') {
-            stage('Build uat Sandbox via sfdx') {
+            SFDCTREE = true
+            notifyBuild('STARTED',ACT_VERSION,ACT_PACKAGEID,GUSWORKITEMS)
+            stage('Build Uat Sandbox via sfdx') {
                 
  
                 if (isUnix()) {
                     echo "isUnix ..................."
-                   // rmsg = sh returnStdout: true, script: "sfdx force:source:deploy -x manifest/package.xml -u dglassman@readiness.salesforce.com.uat "
+	          //  rmsg = sh returnStdout: true, script: "sfdx force:package:install  -p ${ACT_PACKAGEID} -s AdminsOnly -u   -w 15"
+	            rmsg = sh returnStdout: true, script: "sfdx  force:source:deploy -x manifest/package.xml -u "
                 } else {
                     println 'Not Unix .......................'
-                    rmsg = bat returnStdout: true, script: "sfdx force:mdapi:deploy -d manifest/. -u ${HUB_ORG}"
+                   // rmsg = bat returnStdout: true, script: "sfdx force:package:install  -p ${ACT_PACKAGEID} -s AdminsOnly -u -w 15"
+                   // rmsg = bat returnStdout: true, script: "sfdx  force:source:deploy -x manifest/package.xml -u "
                 }
             } //end stage
 	
         }//end if uat   
-	  if (env.BRANCH_NAME == 'ActCI-Prod') {
-            stage('Build uat Sandbox via sfdx') {
+	  if (env.BRANCH_NAME == 'ActCI-test') {
+            SFDCTREE = true
+            notifyBuild('STARTED',ACT_VERSION,ACT_PACKAGEID,GUSWORKITEMS)
+            stage('Build Prod Sandbox via sfdx') {
                 
-               
-                if (isUnix()) {
+                  if (isUnix()) {
                     echo "isUnix ..................."
-                    //rmsg = sh returnStdout: true, script: "sfdx force:source:deploy -x manifest/package.xml -u dglassman@readiness.salesforce.com.jenkinprod"
+	         // rmsg = sh returnStdout: true, script: "sfdx force:package:install  -p ${ACT_PACKAGEID} -s AdminsOnly -u   -w 15"
+	         rmsg = sh returnStdout: true, script: "sfdx  force:source:deploy -x manifest/package.xml -u "
+			  
+	        //  rmsg = sh returnStdout: true, script: "sfdx force:package:install  -p ${ACT_PACKAGEID} -u jenkins@readiness.salesforce.com.vcd  -w 15"
+	       //   rmsg = sh returnStdout: true, script: "sfdx  force:source:deploy -x manifest/package.xml -u jenkins@readiness.salesforce.com.vcd"
                 } else {
+
                     println 'Not Unix .......................'
-                    rmsg = bat returnStdout: true, script: "sfdx force:mdapi:deploy -d manifest/. -u ${HUB_ORG}"
+                  //  rmsg = bat returnStdout: true, script: "sfdx force:package:install  -p ${ACT_PACKAGEID} -u   -w 15"
+                  //  rmsg = bat returnStdout: true, script: "sfdx  force:source:deploy -x manifest/package.xml -u "
                 }
             } //end stage
 	
-        }//end if prod   
+        }//end if test   
 	    } catch (e) {
             // If there was an exception thrown, the build failed
              currentBuild.result = "FAILED"
                throw e
              } finally {
-              // Success or failure, always send notifications
-             notifyBuild(currentBuild.result)
+              // Success or failure, always send notification for valid branches
+		
+			   
+                   switch (SFDCTREE) {
+                    case true:
+		       notifyBuild(currentBuild.result,ACT_VERSION,ACT_PACKAGEID,GUSWORKITEMS)
+                       break
+                    case false:
+		       println("Branch  ${env.BRANCH_NAME} Not Found in Build Flow ")
+                       break
+             
+                   
+                    }
+                   
+		
           }
 	    
     
 }//end node
 
-def notifyBuild(String buildStatus = 'STARTED',String version,String id) {
+def notifyBuild(String buildStatus = 'STARTED',String version,String id,String gus) {
+	
   // build status of null means successful
   buildStatus =  buildStatus ?: 'SUCCESSFUL'
 
@@ -110,7 +136,7 @@ def notifyBuild(String buildStatus = 'STARTED',String version,String id) {
   def colorName = 'RED'
   def colorCode = '#FF0000'
   def subject = "${buildStatus}: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]'"
-	def summary = "${subject} (${env.BUILD_URL}) Appiphony Package ${version} ID: ${id}  Target Release ACT 19.0 "
+  def summary = "${subject} (${env.BUILD_URL}) Appiphony Package ${version} ID: ${id} ACT 20.0 GUS Items: ${gus} "
   def details = """<p>STARTED: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]':</p>
     <p>Check console output at &QUOT;<a href='${env.BUILD_URL}'>${env.JOB_NAME} [${env.BUILD_NUMBER}]</a>&QUOT;</p>"""
 
@@ -127,11 +153,6 @@ def notifyBuild(String buildStatus = 'STARTED',String version,String id) {
   }
 
  echo "${summary}"
-//slackSend (color: colorCode, message: summary)
+ slackSend (color: colorCode, message: summary)
     
 }
-
-        
-    
-}//end node
-
