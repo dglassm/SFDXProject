@@ -34,11 +34,11 @@ node {
                 
                
                 if (isUnix()) {
-                    echo "isUnix ..................."
+                    echo "isUnix ActCI-Dev ..................."
 		    //rmsg = sh returnStdout: true, script: "sfdx force:package1:version:list -u PkgOrg"
-		  // rmsg = sh returnStdout: true, script: "sfdx  force:source:deploy -x manifest/package.xml -u dglassman@readiness.salesforce.com.jenkinsdev "
+		  // rmsg = sh returnStdout: true, script: "sfdx  force:source:deploy -x manifest/package.xml -u  "
 
-	           // rmsg = sh returnStdout: true, script: "sfdx force:package:install  -p ${ACT_PACKAGEID} -u dglassman@readiness.salesforce.com.jenkinsdev  -w 15"
+	           // rmsg = sh returnStdout: true, script: "sfdx force:package:install  -p ${ACT_PACKAGEID} -u   -w 15"
                   
                 } else {
                     println 'Not Unix .......................'
@@ -52,8 +52,8 @@ node {
                 println "Build qa Sandbox Step"
 		
                  if (isUnix()) {
-                    echo "isUnix ..................."
-	          	         //   rmsg = sh returnStdout: true, script: "sfdx  force:source:deploy -x manifest/package.xml -u dglassman@readiness.salesforce.com.qa "
+                    echo "isUnix ActCI-Qa ..................."
+	          	         //   rmsg = sh returnStdout: true, script: "sfdx  force:source:deploy -x manifest/package.xml -u  "
                 } else {
                     println 'Not Unix .......................'
                     rmsg = bat returnStdout: true, script: "sfdx force:mdapi:deploy -d manifest/. -u ${HUB_ORG}"
@@ -67,8 +67,8 @@ node {
                 
  
                 if (isUnix()) {
-                    echo "isUnix ..................."
-                   // rmsg = sh returnStdout: true, script: "sfdx force:source:deploy -x manifest/package.xml -u dglassman@readiness.salesforce.com.uat "
+                    echo "isUnix ActCI-Uat ..................."
+                   // rmsg = sh returnStdout: true, script: "sfdx force:source:deploy -x manifest/package.xml -u"
                 } else {
                     println 'Not Unix .......................'
                     rmsg = bat returnStdout: true, script: "sfdx force:mdapi:deploy -d manifest/. -u ${HUB_ORG}"
@@ -81,8 +81,8 @@ node {
                 
                
                 if (isUnix()) {
-                    echo "isUnix ..................."
-                    //rmsg = sh returnStdout: true, script: "sfdx force:source:deploy -x manifest/package.xml -u dglassman@readiness.salesforce.com.jenkinprod"
+                    echo "isUnix prod..................."
+                    //rmsg = sh returnStdout: true, script: "sfdx force:source:deploy -x manifest/package.xml -u "
                 } else {
                     println 'Not Unix .......................'
                     rmsg = bat returnStdout: true, script: "sfdx force:mdapi:deploy -d manifest/. -u ${HUB_ORG}"
@@ -131,7 +131,4 @@ def notifyBuild(String buildStatus = 'STARTED',String version,String id) {
     
 }
 
-        
-    
-}//end node
 
