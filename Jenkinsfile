@@ -3,7 +3,7 @@
 import groovy.json.JsonSlurperClassic
 node {
     
-    def ACT_VERSION='1.216.0'
+    def ACT_VERSION='1.0'
     def ACT_PACKAGEID='04t5G000003rU0TQAU'
 
     stage('checkout source') {
