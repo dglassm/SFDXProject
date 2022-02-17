@@ -6,7 +6,7 @@ node {
     def ACT_VERSION='1.314'
     def ACT_PACKAGEID='04t5G000003vfR5'					   
     def GUSWORKITEMS=' W-001414'
-    def GUSBUILD='Build AstrosCourseTrackerR.3.10.0'
+    def GUSBUILD='Build 3.10.0'
     stage('checkout source') {
         // when running in multi-branch job, one must issue this command
         checkout scm
