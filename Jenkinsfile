@@ -32,7 +32,7 @@ node {
                 if (isUnix()) {
                     echo "isUnix ..................."
 		  // rmsg = sh returnStdout: true, script: "sfdx force:package:install  -p ${ACT_PACKAGEID} -s AdminsOnly -u   -w 15"
-		   rmsg = sh returnStdout: true, script: "sfdx  force:source:deploy -x manifest/package.xml -u "
+		  // rmsg = sh returnStdout: true, script: "sfdx  force:source:deploy -x manifest/package.xml -u "
 	
                   
                 } else {
@@ -53,7 +53,7 @@ node {
                  if (isUnix()) {
                     echo "isUnix ..................."
 	           // rmsg = sh returnStdout: true, script: "sfdx force:package:install  -p ${ACT_PACKAGEID} -s AdminsOnly -u  -w 15"
-	            rmsg = sh returnStdout: true, script: "sfdx  force:source:deploy -x manifest/package.xml -u "
+	            //rmsg = sh returnStdout: true, script: "sfdx  force:source:deploy -x manifest/package.xml -u "
                 } else {
                     println 'Not Unix .......................'
                     rmsg = bat returnStdout: true, script: "sfdx force:package:install  -p ${ACT_PACKAGEID} -s AdminsOnly -u  -w 15"
@@ -72,7 +72,7 @@ node {
                 if (isUnix()) {
                     echo "isUnix ..................."
 	          //  rmsg = sh returnStdout: true, script: "sfdx force:package:install  -p ${ACT_PACKAGEID} -s AdminsOnly -u   -w 15"
-	            rmsg = sh returnStdout: true, script: "sfdx  force:source:deploy -x manifest/package.xml -u "
+	           // rmsg = sh returnStdout: true, script: "sfdx  force:source:deploy -x manifest/package.xml -u "
                 } else {
                     println 'Not Unix .......................'
                    // rmsg = bat returnStdout: true, script: "sfdx force:package:install  -p ${ACT_PACKAGEID} -s AdminsOnly -u -w 15"
@@ -153,6 +153,6 @@ def notifyBuild(String buildStatus = 'STARTED',String version,String id,String g
   }
 
  echo "${summary}"
- slackSend (color: colorCode, message: summary)
+ //slackSend (color: colorCode, message: summary)
     
 }
