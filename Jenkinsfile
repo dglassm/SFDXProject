@@ -2,10 +2,14 @@
 
 import groovy.json.JsonSlurperClassic
 node {
-    
-    def ACT_VERSION='1.0'
-    def ACT_PACKAGEID='04t5G000003rU0TQAU'
+	
+    def SFDCTREE = false
 
+	
+    def ACT_VERSION='1.296.0'
+    def ACT_PACKAGEID='04t5G000003vf1z'
+    def GUSWORKITEMS='W-000947'
+    def GUSBUILD='Build AstrosCourseTrackerR.3.6.0'
     stage('checkout source') {
         // when running in multi-branch job, one must issue this command
         checkout scm
@@ -20,42 +24,94 @@ node {
             }
         }
         try {   
-	notifyBuild('STARTED')
 		
         if (env.BRANCH_NAME == 'ActCI-Dev') {
+	    SFDCTREE = true	
+	    notifyBuild('STARTED',ACT_VERSION,ACT_PACKAGEID,GUSWORKITEMS)
+
             stage('Build Dev Sandbox via sfdx') {
                 
                
                 if (isUnix()) {
                     echo "isUnix ..................."
-		    //rmsg = sh returnStdout: true, script: "sfdx force:package1:version:list -u PkgOrg"
-		  // rmsg = sh returnStdout: true, script: "sfdx  force:source:deploy -x manifest/package.xml -u  "
-
+		   rmsg = sh returnStdout: true, script: "sfdx force:package:install  -p ${ACT_PACKAGEID} -s AdminsOnly -u jenkins@readiness.salesforce.com.devstage  -w 15"
+		   rmsg = sh returnStdout: true, script: "sfdx  force:source:deploy -x manifest/package.xml -u jenkins@readiness.salesforce.com.devstage"
+	
                   
                 } else {
                     println 'Not Unix .......................'
-                    rmsg = bat returnStdout: true, script: "sfdx force:mdapi:deploy -d manifest/. -u ${HUB_ORG}"
+		    rmsg = bat  returnStdout: true, script: "sfdx force:package:install  -p ${ACT_PACKAGEID} -s AdminsOnly -u jenkins@readiness.salesforce.com.devstage  -w 15"
+                    rmsg = bat returnStdout: true, script: "sfdx  force:source:deploy -x manifest/package.xml -u jenkins@readiness.salesforce.com.devstage"
                 }
             } //end stage
 	
         }//end if dev
+	if (env.BRANCH_NAME == 'ActCI-Qa') {
+	    SFDCTREE = true
+            notifyBuild('STARTED',ACT_VERSION,ACT_PACKAGEID,GUSWORKITEMS)
+
+            stage('Build qa Sandbox Step  ') {
+                println "Build Qa Sandbox Step"
+		
+                 if (isUnix()) {
+                    echo "isUnix ..................."
+	            rmsg = sh returnStdout: true, script: "sfdx force:package:install  -p ${ACT_PACKAGEID} -s AdminsOnly -u jenkins@readiness.salesforce.com.qa  -w 15"
+	            rmsg = sh returnStdout: true, script: "sfdx  force:source:deploy -x manifest/package.xml -u jenkins@readiness.salesforce.com.qa"
+                } else {
+                    println 'Not Unix .......................'
+                    rmsg = bat returnStdout: true, script: "sfdx force:package:install  -p ${ACT_PACKAGEID} -s AdminsOnly -u jenkins@readiness.salesforce.com.qa  -w 15"
+                    rmsg = bat returnStdout: true, script: "sfdx  force:source:deploy -x manifest/package.xml -u jenkins@readiness.salesforce.com.qa"
+                }
+            } //end stage
+	  
 	
+        }//end if qa
+	 if (env.BRANCH_NAME == 'ActCI-Uat') {
+            SFDCTREE = true
+            notifyBuild('STARTED',ACT_VERSION,ACT_PACKAGEID,GUSWORKITEMS)
+            stage('Build Uat Sandbox via sfdx') {
+                
+ 
+                if (isUnix()) {
+                    echo "isUnix ..................."
+	            rmsg = sh returnStdout: true, script: "sfdx force:package:install  -p ${ACT_PACKAGEID} -s AdminsOnly -u jenkins@readiness.salesforce.com.uat  -w 15"
+	            rmsg = sh returnStdout: true, script: "sfdx  force:source:deploy -x manifest/package.xml -u jenkins@readiness.salesforce.com.uat"
+                } else {
+                    println 'Not Unix .......................'
+                    rmsg = bat returnStdout: true, script: "sfdx force:package:install  -p ${ACT_PACKAGEID} -s AdminsOnly -u jenkins@readiness.salesforce.com.uat  -w 15"
+                    rmsg = bat returnStdout: true, script: "sfdx  force:source:deploy -x manifest/package.xml -u jenkins@readiness.salesforce.com.uat"
+                }
+            } //end stage
+	
+        }//end if uat   
 	 
-	
-       
 	    } catch (e) {
             // If there was an exception thrown, the build failed
              currentBuild.result = "FAILED"
                throw e
              } finally {
-              // Success or failure, always send notifications
-             notifyBuild(currentBuild.result)
+              // Success or failure, always send notification for valid branches
+		
+			   
+                   switch (SFDCTREE) {
+                    case true:
+		       notifyBuild(currentBuild.result,ACT_VERSION,ACT_PACKAGEID,GUSWORKITEMS)
+                       break
+                    case false:
+		       println("Branch  ${env.BRANCH_NAME} Not Found in Build Flow ")
+                       break
+             
+                   
+                    }
+                   
+		
           }
 	    
     
 }//end node
 
-def notifyBuild(String buildStatus = 'STARTED',String version,String id) {
+def notifyBuild(String buildStatus = 'STARTED',String version,String id,String gus) {
+	
   // build status of null means successful
   buildStatus =  buildStatus ?: 'SUCCESSFUL'
 
@@ -63,7 +119,7 @@ def notifyBuild(String buildStatus = 'STARTED',String version,String id) {
   def colorName = 'RED'
   def colorCode = '#FF0000'
   def subject = "${buildStatus}: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]'"
-	def summary = "${subject} (${env.BUILD_URL}) Appiphony Package ${version} ID: ${id}  Target Release ACT 19.0 "
+  def summary = "${subject} (${env.BUILD_URL}) Appiphony Package ${version} ID: ${id} ACT 20.0 GUS Items: ${gus} "
   def details = """<p>STARTED: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]':</p>
     <p>Check console output at &QUOT;<a href='${env.BUILD_URL}'>${env.JOB_NAME} [${env.BUILD_NUMBER}]</a>&QUOT;</p>"""
 
@@ -80,7 +136,6 @@ def notifyBuild(String buildStatus = 'STARTED',String version,String id) {
   }
 
  echo "${summary}"
-//slackSend (color: colorCode, message: summary)
+ //slackSend (color: colorCode, message: summary)
     
 }
-
